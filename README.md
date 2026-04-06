@@ -1,5 +1,6 @@
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/juliusolaifa/mixchisq/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/juliusolaifa/mixchisq/actions/workflows/R-CMD-check.yaml)
+![mixchisq badge](https://img.shields.io/badge/mixchisq-when%20%CF%87%C2%B2%20isn%E2%80%99t%20enough-D946EF?style=for-the-badge&logo=rstudioide&logoColor=white&labelColor=18181B)
 <!-- badges: end -->
 
 # mixchisq

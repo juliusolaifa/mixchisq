@@ -1,0 +1,126 @@
+---
+title: "Using mixchisq"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Using mixchisq}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Overview
+
+`mixchisq` provides a small set of utilities for finite mixtures of chi-square distributions. The motivating use case is practical rather than theoretical: sometimes your reference distribution is not a single chi-square law, and you need a convenient way to evaluate its CDF, density, quantiles, or simulate from it.
+
+The package supports both standard finite mixtures such as
+
+\[
+0.5\chi^2_2 + 0.5\chi^2_3,
+\]
+
+and chi-bar-square style laws with an atom at zero, such as
+
+\[
+0.5\chi^2_0 + 0.5\chi^2_1.
+\]
+
+```{r}
+library(mixchisq)
+```
+
+## A simple mixture without an atom at zero
+
+Consider the mixture
+
+\[
+X \sim 0.5\chi^2_2 + 0.5\chi^2_3.
+\]
+
+You can evaluate probabilities, densities, quantiles, and simulate from it directly.
+
+```{r}
+pmixchisq(5, df = c(2, 3), w = c(0.5, 0.5))
+dmixchisq(5, df = c(2, 3), w = c(0.5, 0.5))
+qmixchisq(0.95, df = c(2, 3), w = c(0.5, 0.5))
+set.seed(123)
+rmixchisq(10, df = c(2, 3), w = c(0.5, 0.5))
+```
+
+You can also plot the CDF or density.
+
+```{r, fig.width=6, fig.height=4}
+plot_mixchisq(df = c(2, 3), w = c(0.5, 0.5), type = "cdf")
+```
+
+## A chi-bar-square style mixture
+
+Now consider
+
+\[
+X \sim 0.5\chi^2_0 + 0.5\chi^2_1,
+\]
+
+which has a point mass of size 0.5 at zero.
+
+```{r}
+pmixchisq(c(-1, 0, 0.2, 1), df = c(0, 1), w = c(0.5, 0.5))
+qmixchisq(c(0.25, 0.50, 0.90), df = c(0, 1), w = c(0.5, 0.5))
+set.seed(1)
+rmixchisq(20, df = c(0, 1), w = c(0.5, 0.5))
+```
+
+The jump at zero is reflected in the CDF plot.
+
+```{r, fig.width=6, fig.height=4}
+plot_mixchisq(df = c(0, 1), w = c(0.5, 0.5), type = "cdf")
+```
+
+## Replacing ad hoc simulation code
+
+A common pattern is to simulate a mixture using a latent Bernoulli draw and then generate from one of two chi-square distributions. For example:
+
+```{r}
+set.seed(123)
+manual <- {
+  z <- runif(10000)
+  as.numeric(z < 0.5) * rchisq(10000, df = 2) +
+    as.numeric(z > 0.5) * rchisq(10000, df = 3)
+}
+summary(manual)
+```
+
+With `mixchisqutils`, that becomes more direct and easier to read:
+
+```{r}
+set.seed(123)
+auto <- rmixchisq(10000, df = c(2, 3), w = c(0.5, 0.5))
+summary(auto)
+```
+
+And if you want the CDF on a grid, you do not need a large Monte Carlo approximation first.
+
+```{r}
+grid <- seq(0.1, 10, by = 0.1)
+cdf_vals <- pmixchisq(grid, df = c(2, 3), w = c(0.5, 0.5))
+head(cdf_vals)
+```
+
+## Typical workflow
+
+A practical workflow looks like this:
+
+1. identify the mixture weights and degrees of freedom suggested by your constrained test,
+2. evaluate `pmixchisq()` for p-values or CDF comparisons,
+3. use `qmixchisq()` for critical values,
+4. use `rmixchisq()` for simulation studies or calibration checks,
+5. use `plot_mixchisq()` to sanity-check the reference law visually.
+
+## Summary
+
+`mixchisq` is meant to be a compact utility package. It does not try to derive the mixture for you. Instead, once you know the mixture you want, it gives you a clean way to work with it in code.

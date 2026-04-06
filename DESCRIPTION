@@ -1,0 +1,26 @@
+Package: mixchisq
+Type: Package
+Title: Utilities for Mixtures of Chi-Square Distributions
+Version: 0.1.0
+Authors@R: c(
+    person(given = "Julius", family = "Olaifa", role = c("aut", "cre"),
+           email = "julius.olaifa@okstate.edu"),
+    person(given = "Pratyaydipta", family = "Rudra", role = c("aut"),
+           email = "prudra@okstate.edu")
+    )
+Description: Provides utilities for finite mixtures of chi-square distributions,
+    including density, distribution, quantile, and random generation functions.
+    The package supports chi-bar-square style mixtures that include an atom at zero,
+    which are useful as reference distributions in constrained likelihood ratio tests.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.3
+Suggests:
+    testthat (>= 3.0.0),
+    knitr,
+    rmarkdown,
+    ggplot2
+VignetteBuilder: knitr
+Config/testthat/edition: 3

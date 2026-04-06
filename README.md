@@ -1,3 +1,7 @@
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/juliusolaifa/mixchisq/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/juliusolaifa/mixchisq/actions/workflows/R-CMD-check.yaml)
+<!-- badges: end -->
+
 # mixchisq
 
 `mixchisq` is a lightweight R package for working with finite mixtures of chi-square distributions, including chi-bar-square style laws with an atom at zero.
